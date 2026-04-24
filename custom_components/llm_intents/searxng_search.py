@@ -39,9 +39,10 @@ class SearXngSearchTool(SearchWebTool):
                 results = []
                 for result in data.get("results", [])[0:num_results]:
                     title = result.get("title", "")
+                    result_url = result.get("url", "")
                     content = await self.cleanup_text(result.get("content", ""))
 
-                    result = {"title": title, "content": content}
+                    result = {"title": title, "url": result_url, "content": content}
 
                     results.append(result)
                 return results

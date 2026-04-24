@@ -18,7 +18,11 @@ BASIC_UTILITIES_API_NAME = "Basic Utilities"
 
 CONF_CACHE_MAX_AGE = "cache_max_age"
 
-SEARCH_SERVICES_PROMPT = "You may utilise the Search Services tools to lookup up-to-date information from the internet."
+SEARCH_SERVICES_PROMPT = (
+    "You may utilise the Search Services tools to lookup up-to-date information from the internet. "
+    "When a search returns URLs that contain the information you need, use the Web Fetch tool to "
+    "retrieve the full content of those web pages."
+)
 
 WEB_FETCH_SERVICES_PROMPT = "Use the Web Fetch tool to retrieve the content of web pages and convert HTML to readable text."
 

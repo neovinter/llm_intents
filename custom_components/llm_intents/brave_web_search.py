@@ -79,6 +79,7 @@ class BraveSearchTool(SearchWebTool):
                 results = []
                 for result in data.get("web", {}).get("results", []):
                     title = result.get("title", "")
+                    url = result.get("url", "")
                     content = result.get("description", "")
                     extra_snippets = result.get("extra_snippets", [])[
                         0:max_snippets_per_url
@@ -92,7 +93,9 @@ class BraveSearchTool(SearchWebTool):
                     else:
                         result_content = await self.cleanup_text(content)
 
-                    results.append({"title": title, "content": result_content})
+                    results.append(
+                        {"title": title, "url": url, "content": result_content}
+                    )
 
                 return results
             raise RuntimeError(
