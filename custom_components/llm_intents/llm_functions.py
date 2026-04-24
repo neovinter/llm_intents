@@ -11,6 +11,7 @@ from . import CONF_SEARCH_PROVIDER, CONF_SEARCH_PROVIDER_BRAVE
 from .brave_llm_context_search import BraveLlmContextSearchTool
 from .brave_web_search import BraveSearchTool
 from .calculator import CalculatorTool
+from .web_fetch import WebFetchTool
 from .const import (
     BASIC_UTILITIES_API_NAME,
     BASIC_UTILITIES_SERVICES_PROMPT,
@@ -20,6 +21,7 @@ from .const import (
     CONF_SEARCH_PROVIDER_BRAVE_LLM,
     CONF_SEARCH_PROVIDER_SEARXNG,
     CONF_UNIT_CONVERTER_ENABLED,
+    CONF_WEB_FETCH_ENABLED,
     CONF_WEATHER_ENABLED,
     CONF_WIKIPEDIA_ENABLED,
     CONF_YOUTUBE_ENABLED,
@@ -58,6 +60,7 @@ SEARCH_CONF_ENABLED_MAP = [
     (CONF_GOOGLE_PLACES_ENABLED, FindPlacesTool),
     (CONF_YOUTUBE_ENABLED, SearchYouTubeTool),
     (CONF_WIKIPEDIA_ENABLED, SearchWikipediaTool),
+    (CONF_WEB_FETCH_ENABLED, WebFetchTool),
 ]
 
 WEATHER_CONF_ENABLED_MAP = [

@@ -62,6 +62,8 @@ from .const import (
     CONF_SEARXNG_NUM_RESULTS,
     CONF_SEARXNG_URL,
     CONF_UNIT_CONVERTER_ENABLED,
+    CONF_WEB_FETCH_ENABLED,
+    CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
     CONF_WEATHER_ENABLED,
     CONF_WEATHER_TEMPERATURE_SENSOR,
     CONF_WIKIPEDIA_ENABLED,
@@ -87,6 +89,7 @@ STEP_SEARXNG = "searxng"
 STEP_GOOGLE_PLACES = "google_places"
 STEP_YOUTUBE = "youtube"
 STEP_WIKIPEDIA = "wikipedia"
+STEP_WEB_FETCH = "web_fetch"
 STEP_WEATHER = "weather"
 STEP_BASIC_UTILITIES = "basic_utilities"
 STEP_CONFIGURE_SEARCH = "configure"
@@ -125,6 +128,7 @@ def get_step_user_data_schema(hass) -> vol.Schema:
         vol.Optional(CONF_GOOGLE_PLACES_ENABLED, default=False): bool,
         vol.Optional(CONF_YOUTUBE_ENABLED, default=False): bool,
         vol.Optional(CONF_WIKIPEDIA_ENABLED, default=False): bool,
+        vol.Optional(CONF_WEB_FETCH_ENABLED, default=False): bool,
         vol.Optional(CONF_WEATHER_ENABLED, default=False): bool,
         vol.Optional(CONF_BASIC_UTILITIES_ENABLED, default=False): bool,
     }
@@ -142,6 +146,10 @@ def expand_config_for_schema(config: dict) -> dict:
     provider_keys = config.get(CONF_PROVIDER_API_KEYS) or {}
     result[CONF_GOOGLE_API_KEY] = provider_keys.get(PROVIDER_GOOGLE, "")
     result[CONF_BRAVE_API_KEY] = provider_keys.get(PROVIDER_BRAVE, "")
+    result[CONF_WEB_FETCH_MAX_CONTENT_LENGTH] = (
+        config.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH)
+        or SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH)
+    )
     return result
 
 
@@ -403,6 +411,26 @@ async def get_wikipedia_schema(hass) -> vol.Schema:
     )
 
 
+async def get_web_fetch_schema(hass) -> vol.Schema:
+    """Return the static schema for Web Fetch service configuration."""
+    return vol.Schema(
+        {
+            vol.Required(
+                CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
+                default=SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH),
+            ): MyNumberSelector(
+                NumberSelectorConfig(
+                    min=1000,
+                    max=50000,
+                    step=500,
+                    mode=NumberSelectorMode.BOX,
+                    unit_of_measurement="Characters",
+                )
+            ),
+        }
+    )
+
+
 async def get_basic_utilities_schema(hass) -> vol.Schema:
     """Return the static schema for Basic Utilities tool configuration."""
     return vol.Schema(
@@ -499,6 +527,7 @@ SEARCH_STEP_ORDER = {
     STEP_GOOGLE_PLACES: [CONF_GOOGLE_PLACES_ENABLED, get_google_places_schema],
     STEP_YOUTUBE: [CONF_YOUTUBE_ENABLED, get_youtube_schema],
     STEP_WIKIPEDIA: [CONF_WIKIPEDIA_ENABLED, get_wikipedia_schema],
+    STEP_WEB_FETCH: [CONF_WEB_FETCH_ENABLED, get_web_fetch_schema],
 }
 
 WEATHER_STEP_ORDER = {
@@ -513,6 +542,7 @@ BASIC_UTILITIES_STEP_ORDER = {
 
 INITIAL_CONFIG_STEP_ORDER = {
     **SEARCH_STEP_ORDER,
+    STEP_WEB_FETCH: [CONF_WEB_FETCH_ENABLED, get_web_fetch_schema],
     STEP_WEATHER: [CONF_WEATHER_ENABLED, get_weather_schema],
     STEP_BASIC_UTILITIES: [CONF_BASIC_UTILITIES_ENABLED, get_basic_utilities_schema],
 }
@@ -655,6 +685,12 @@ class LlmIntentsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle Wikipedia configuration step."""
         return await self.handle_step(STEP_WIKIPEDIA, user_input)
 
+    async def async_step_web_fetch(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.FlowResult:
+        """Handle Web Fetch configuration step."""
+        return await self.handle_step(STEP_WEB_FETCH, user_input)
+
     async def async_step_weather(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.FlowResult:
@@ -731,6 +767,10 @@ class LlmIntentsOptionsFlow(config_entries.OptionsFlowWithReload):
                 ): bool,
                 vol.Optional(
                     CONF_WIKIPEDIA_ENABLED,
+                    default=False,
+                ): bool,
+                vol.Optional(
+                    CONF_WEB_FETCH_ENABLED,
                     default=False,
                 ): bool,
             }
@@ -879,6 +919,12 @@ class LlmIntentsOptionsFlow(config_entries.OptionsFlowWithReload):
     ) -> config_entries.FlowResult:
         """Handle Wikipedia configuration step in options flow."""
         return await self.handle_step(STEP_WIKIPEDIA, user_input)
+
+    async def async_step_web_fetch(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.FlowResult:
+        """Handle Web Fetch configuration step in options flow."""
+        return await self.handle_step(STEP_WEB_FETCH, user_input)
 
     async def async_step_configure_basic_utilities(
         self, user_input: dict[str, Any] | None = None
