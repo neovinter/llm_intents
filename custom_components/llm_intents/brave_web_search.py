@@ -74,10 +74,10 @@ class BraveSearchTool(SearchWebTool):
             headers=headers,
             params=params,
         ) as resp:
+            response_content = await resp.json()
             if resp.status == 200:
-                data = await resp.json()
                 results = []
-                for result in data.get("web", {}).get("results", []):
+                for result in response_content.get("web", {}).get("results", []):
                     title = result.get("title", "")
                     content = result.get("description", "")
                     extra_snippets = result.get("extra_snippets", [])[
@@ -96,5 +96,5 @@ class BraveSearchTool(SearchWebTool):
 
                 return results
             raise RuntimeError(
-                f"Web search received a HTTP {resp.status} error from Brave"
+                f"Web search received a HTTP {resp.status} error from Brave: {response_content}"
             )

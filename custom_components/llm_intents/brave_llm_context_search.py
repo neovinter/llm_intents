@@ -29,7 +29,7 @@ class BraveLlmContextSearchTool(SearchWebTool):
         text = await super().cleanup_text(text)
         text = re.sub(r"\[Image: [^\]]+\]", "", text)
 
-        if text[0] == "{" and text[-1] == "}":
+        if text and text[0] == "{" and text[-1] == "}":
             # decode JSON objects
             try:
                 return json.loads(text)
@@ -97,10 +97,10 @@ class BraveLlmContextSearchTool(SearchWebTool):
             headers=headers,
             params=params,
         ) as resp:
+            response_content = await resp.json()
             if resp.status == 200:
-                data = await resp.json()
                 results = []
-                for result in data.get("grounding", {}).get("generic", []):
+                for result in response_content.get("grounding", {}).get("generic", []):
                     title = result.get("title")
                     snippets = result.get("snippets")
 
@@ -112,5 +112,5 @@ class BraveLlmContextSearchTool(SearchWebTool):
 
                 return results
             raise RuntimeError(
-                f"Web search received a HTTP {resp.status} error from Brave"
+                f"Web search received a HTTP {resp.status} error from Brave: {response_content}"
             )
