@@ -428,7 +428,7 @@ async def get_web_fetch_schema(hass) -> vol.Schema:
             vol.Required(
                 CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
                 default=SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH),
-            ): MyNumberSelector(
+            ): NumberSelector(
                 NumberSelectorConfig(
                     min=1000,
                     max=50000,
