@@ -74,7 +74,8 @@ class SearchWikipediaTool(BaseTool):
             ) as resp:
                 if resp.status != 200:
                     _LOGGER.error(
-                        f"Wikipedia search received a HTTP {resp.status} error from Wikipedia"
+                        "Wikipedia search received a HTTP %s error from Wikipedia",
+                        resp.status,
                     )
                     return {"error": f"Wikipedia search error: {resp.status}"}
 
@@ -113,5 +114,5 @@ class SearchWikipediaTool(BaseTool):
                 return {"results": results}
 
         except Exception as e:
-            _LOGGER.error("Wikipedia search error: %s", e)
+            _LOGGER.exception()
             return {"error": f"Error searching Wikipedia: {e!s}"}

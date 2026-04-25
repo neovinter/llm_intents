@@ -184,6 +184,7 @@ class PlayVideoTool(BaseTool):
     def update_args(hass: HomeAssistant) -> None:
         """
         Update the tool args with the currently available media players, in case this has changed since we were last called.
+
         This is called every time the LLM integration is about to query the model.
         """
         video_players = get_video_capable_media_players(hass, None)
@@ -267,7 +268,7 @@ class PlayVideoTool(BaseTool):
             if "entity_id" in target:
                 existing = target["entity_id"]
                 if isinstance(existing, str):
-                    target["entity_id"] = [existing] + video_players
+                    target["entity_id"] = [existing, *video_players]
                 else:
                     target["entity_id"] = list(existing) + video_players
             else:

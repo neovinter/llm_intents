@@ -25,11 +25,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class BraveLlmContextSearchTool(SearchWebTool):
+    """Tool for searching the web via Brave LLM Context Search API."""
+
     async def cleanup_text(self, text: str) -> str:
+        """Cleanup the text that we send back to the LLM."""
         text = await super().cleanup_text(text)
         text = re.sub(r"\[Image: [^\]]+\]", "", text)
 
-        if text[0] == "{" and text[-1] == "}":
+        if text and text[0] == "{" and text[-1] == "}":
             # decode JSON objects
             try:
                 return json.loads(text)
@@ -58,7 +61,8 @@ class BraveLlmContextSearchTool(SearchWebTool):
         max_snippets_per_url = int(self.config.get(CONF_BRAVE_MAX_SNIPPETS_PER_URL, 2))
 
         if not api_key:
-            raise RuntimeError("Brave API key not configured")
+            msg = "Brave API key not configured"
+            raise RuntimeError(msg)
 
         session = async_get_clientsession(self.hass)
         headers = {
@@ -97,10 +101,10 @@ class BraveLlmContextSearchTool(SearchWebTool):
             headers=headers,
             params=params,
         ) as resp:
+            response_content = await resp.json()
             if resp.status == 200:
-                data = await resp.json()
                 results = []
-                for result in data.get("grounding", {}).get("generic", []):
+                for result in response_content.get("grounding", {}).get("generic", []):
                     title = result.get("title")
                     snippets = result.get("snippets")
 
@@ -111,6 +115,5 @@ class BraveLlmContextSearchTool(SearchWebTool):
                     results.append({"title": title, "content": result_content})
 
                 return results
-            raise RuntimeError(
-                f"Web search received a HTTP {resp.status} error from Brave"
-            )
+            error_msg = f"Web search received a HTTP {resp.status} error from Brave: {response_content}"
+            raise RuntimeError(error_msg)

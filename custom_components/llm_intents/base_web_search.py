@@ -27,11 +27,9 @@ class SearchWebTool(BaseTool):
     Your response must be in plain-text, without the use of any formatting, and should be kept to 2-3 sentences.
     """
 
-    prompt_description = "\n".join(
-        [
-            "General knowledge questions should be deferred to the web search tool for data:",
-            "- Do not rely upon your trained knowledge.",
-        ]
+    prompt_description = (
+        "General knowledge questions should be deferred to the web search tool for data:\n"
+        "- Do not rely upon your trained knowledge."
     )
 
     parameters = vol.Schema(
@@ -79,5 +77,5 @@ class SearchWebTool(BaseTool):
 
             return response
         except Exception as e:
-            _LOGGER.exception(e)
+            _LOGGER.exception()
             return {"error": f"Error searching web: {e!s}"}

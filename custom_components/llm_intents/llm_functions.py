@@ -85,7 +85,7 @@ class BaseAPI(llm.API):
     _TOOLS_CONF_MAP = None
     _API_PROMPT = ""
 
-    def __init__(self, hass: HomeAssistant, name: str, id: str | None = None) -> None:
+    def __init__(self, hass: HomeAssistant, name: str, id: str | None = None) -> None:  # noqa: A002
         """Initialize the API."""
         super().__init__(hass=hass, id=id or name.lower().replace(" ", "_"), name=name)
 
@@ -213,8 +213,8 @@ async def setup_llm_functions(hass: HomeAssistant, config_data: dict[str, Any]) 
             hass.data[DOMAIN]["unregister_api"].append(
                 llm.async_register_api(hass, basic_utilities_api)
             )
-    except Exception as e:
-        _LOGGER.error("Failed to register LLM API: %s", e)
+    except Exception:
+        _LOGGER.exception("Failed to register LLM API")
         raise
 
 
