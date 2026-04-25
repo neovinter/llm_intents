@@ -21,7 +21,8 @@ CONF_CACHE_MAX_AGE = "cache_max_age"
 SEARCH_SERVICES_PROMPT = (
     "You may utilise the Search Services tools to lookup up-to-date information from the internet. "
     "When a search returns URLs that contain the information you need, use the Web Fetch tool to "
-    "retrieve the full content of those web pages."
+    "retrieve the full content of those web pages. "
+    "For Telegram channel links (t.me/), use the Read Telegram tool to extract posts."
 )
 
 WEB_FETCH_SERVICES_PROMPT = "Use the Web Fetch tool to retrieve the content of web pages and convert HTML to readable text."
@@ -152,6 +153,11 @@ CONF_YOUTUBE_ENABLED = "youtube_enabled"
 CONF_WIKIPEDIA_ENABLED = "wikipedia_enabled"
 CONF_WIKIPEDIA_NUM_RESULTS = "wikipedia_num_results"
 
+# Telegram-specific constants
+
+CONF_TELEGRAM_ENABLED = "telegram_enabled"
+CONF_TELEGRAM_NUM_POSTS = "telegram_num_posts"
+
 # Web Fetch-specific constants
 
 CONF_WEB_FETCH_ENABLED = "web_fetch_enabled"
@@ -190,6 +196,7 @@ SERVICE_DEFAULTS = {
     CONF_GOOGLE_PLACES_RADIUS: 5,
     CONF_GOOGLE_PLACES_RANKING: "Distance",
     CONF_WIKIPEDIA_NUM_RESULTS: 1,
+    CONF_TELEGRAM_NUM_POSTS: 5,
     CONF_WEB_FETCH_MAX_CONTENT_LENGTH: 10000,
     CONF_DAILY_WEATHER_ENTITY: None,
     CONF_HOURLY_WEATHER_ENTITY: None,

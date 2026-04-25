@@ -10,6 +10,7 @@
           "youtube_enabled": "Enable YouTube Search",
           "wikipedia_enabled": "Enable Wikipedia Search",
           "web_fetch_enabled": "Enable Web Fetch",
+          "telegram_enabled": "Enable Telegram",
           "weather_enabled": "Enable Weather Forecast",
           "basic_utilities_enabled": "Enable Basic Utilities"
         }
@@ -88,6 +89,13 @@
           "web_fetch_max_content_length": "Maximum Content Length"
         }
       },
+      "telegram": {
+        "title": "Configure Telegram",
+        "description": "Configure Telegram reader settings.",
+        "data": {
+          "telegram_num_posts": "Number of Posts"
+        }
+      },
       "weather": {
         "title": "Configure Weather",
         "description": "Configure Weather sources.",
@@ -135,7 +143,8 @@
           "google_places_enabled": "Enable Google Places",
           "youtube_enabled": "Enable YouTube Search",
           "wikipedia_enabled": "Enable Wikipedia Search",
-          "web_fetch_enabled": "Enable Web Fetch"
+          "web_fetch_enabled": "Enable Web Fetch",
+          "telegram_enabled": "Enable Telegram"
         }
       },
       "configure_weather": {
@@ -210,6 +219,13 @@
         "description": "Configure Wikipedia search settings.",
         "data": {
           "wikipedia_num_results": "Number of Results"
+        }
+      },
+      "telegram": {
+        "title": "Configure Telegram",
+        "description": "Configure Telegram reader settings.",
+        "data": {
+          "telegram_num_posts": "Number of Posts"
         }
       },
       "weather": {

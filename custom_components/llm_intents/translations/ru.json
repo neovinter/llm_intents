@@ -10,6 +10,7 @@
           "youtube_enabled": "Включить поиск по YouTube",
           "wikipedia_enabled": "Включить поиск по Wikipedia",
           "web_fetch_enabled": "Включить парсинг веб-страниц",
+          "telegram_enabled": "Включить Telegram",
           "weather_enabled": "Включить прогноз погоды",
           "basic_utilities_enabled": "Включить базовые утилиты"
         }
@@ -88,6 +89,13 @@
           "web_fetch_max_content_length": "Максимальная длина контента"
         }
       },
+      "telegram": {
+        "title": "Настройка Telegram",
+        "description": "Настройка параметров чтения Telegram каналов.",
+        "data": {
+          "telegram_num_posts": "Количество постов"
+        }
+      },
       "weather": {
         "title": "Настройка погоды",
         "description": "Настройка источников погоды.",
@@ -135,7 +143,8 @@
           "google_places_enabled": "Включить Google Places",
           "youtube_enabled": "Включить поиск по YouTube",
           "wikipedia_enabled": "Включить поиск по Wikipedia",
-          "web_fetch_enabled": "Включить парсинг веб-страниц"
+          "web_fetch_enabled": "Включить парсинг веб-страниц",
+          "telegram_enabled": "Включить Telegram"
         }
       },
       "configure_weather": {
@@ -217,6 +226,13 @@
         "description": "Настройка параметров парсинга веб-страниц.",
         "data": {
           "web_fetch_max_content_length": "Максимальная длина контента"
+        }
+      },
+      "telegram": {
+        "title": "Настройка Telegram",
+        "description": "Настройка параметров чтения Telegram каналов.",
+        "data": {
+          "telegram_num_posts": "Количество постов"
         }
       },
       "weather": {

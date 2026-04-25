@@ -65,6 +65,8 @@ from .const import (
     CONF_SEARCH_PROVIDERS,
     CONF_SEARXNG_NUM_RESULTS,
     CONF_SEARXNG_URL,
+    CONF_TELEGRAM_ENABLED,
+    CONF_TELEGRAM_NUM_POSTS,
     CONF_UNIT_CONVERTER_ENABLED,
     CONF_WEB_FETCH_ENABLED,
     CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
@@ -94,6 +96,7 @@ STEP_GOOGLE_PLACES = "google_places"
 STEP_YOUTUBE = "youtube"
 STEP_WIKIPEDIA = "wikipedia"
 STEP_WEB_FETCH = "web_fetch"
+STEP_TELEGRAM = "telegram"
 STEP_WEATHER = "weather"
 STEP_BASIC_UTILITIES = "basic_utilities"
 STEP_CONFIGURE_SEARCH = "configure"
@@ -138,6 +141,7 @@ def get_step_user_data_schema(hass: HomeAssistant) -> vol.Schema:
         vol.Optional(CONF_YOUTUBE_ENABLED, default=False): bool,
         vol.Optional(CONF_WIKIPEDIA_ENABLED, default=False): bool,
         vol.Optional(CONF_WEB_FETCH_ENABLED, default=False): bool,
+        vol.Optional(CONF_TELEGRAM_ENABLED, default=False): bool,
         vol.Optional(CONF_WEATHER_ENABLED, default=False): bool,
         vol.Optional(CONF_BASIC_UTILITIES_ENABLED, default=False): bool,
     }
@@ -442,6 +446,26 @@ async def get_web_fetch_schema(hass) -> vol.Schema:
     )
 
 
+async def get_telegram_schema(hass) -> vol.Schema:
+    """Return the static schema for Telegram service configuration."""
+    return vol.Schema(
+        {
+            vol.Required(
+                CONF_TELEGRAM_NUM_POSTS,
+                default=SERVICE_DEFAULTS.get(CONF_TELEGRAM_NUM_POSTS),
+            ): NumberSelector(
+                NumberSelectorConfig(
+                    min=1,
+                    max=20,
+                    step=1,
+                    mode=NumberSelectorMode.SLIDER,
+                    unit_of_measurement="Posts",
+                )
+            ),
+        }
+    )
+
+
 async def get_basic_utilities_schema(hass: HomeAssistant) -> vol.Schema:
     """Return the static schema for Basic Utilities tool configuration."""
     return vol.Schema(
@@ -539,6 +563,7 @@ SEARCH_STEP_ORDER = {
     STEP_YOUTUBE: [CONF_YOUTUBE_ENABLED, get_youtube_schema],
     STEP_WIKIPEDIA: [CONF_WIKIPEDIA_ENABLED, get_wikipedia_schema],
     STEP_WEB_FETCH: [CONF_WEB_FETCH_ENABLED, get_web_fetch_schema],
+    STEP_TELEGRAM: [CONF_TELEGRAM_ENABLED, get_telegram_schema],
 }
 
 WEATHER_STEP_ORDER = {
@@ -701,6 +726,12 @@ class LlmIntentsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle Web Fetch configuration step."""
         return await self.handle_step(STEP_WEB_FETCH, user_input)
 
+    async def async_step_telegram(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.FlowResult:
+        """Handle Telegram configuration step."""
+        return await self.handle_step(STEP_TELEGRAM, user_input)
+
     async def async_step_weather(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.FlowResult:
@@ -781,6 +812,10 @@ class LlmIntentsOptionsFlow(config_entries.OptionsFlowWithReload):
                 ): bool,
                 vol.Optional(
                     CONF_WEB_FETCH_ENABLED,
+                    default=False,
+                ): bool,
+                vol.Optional(
+                    CONF_TELEGRAM_ENABLED,
                     default=False,
                 ): bool,
             }
@@ -935,6 +970,12 @@ class LlmIntentsOptionsFlow(config_entries.OptionsFlowWithReload):
     ) -> config_entries.FlowResult:
         """Handle Web Fetch configuration step in options flow."""
         return await self.handle_step(STEP_WEB_FETCH, user_input)
+
+    async def async_step_telegram(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.FlowResult:
+        """Handle Telegram configuration step in options flow."""
+        return await self.handle_step(STEP_TELEGRAM, user_input)
 
     async def async_step_configure_basic_utilities(
         self, user_input: dict[str, Any] | None = None
