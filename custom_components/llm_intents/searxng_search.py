@@ -45,9 +45,9 @@ class SearXngSearchTool(SearchWebTool):
                     result_url = result.get("url", "")
                     content = await self.cleanup_text(result.get("content", ""))
 
-                    result = {"title": title, "url": result_url, "content": content}
+                    item = {"title": title, "url": result_url, "content": content}
 
-                    results.append(result)
+                    results.append(item)
                 return results
             err_msg = (
                 f"Web search received a HTTP {resp.status} error from SearXNG: {data}"

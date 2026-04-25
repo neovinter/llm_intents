@@ -1,9 +1,9 @@
 """Web Fetch tool for retrieving and extracting content from web pages."""
 
-import asyncio
 import logging
 import re
 from html.parser import HTMLParser
+from typing import ClassVar
 
 import voluptuous as vol
 from homeassistant.core import HomeAssistant
@@ -25,16 +25,39 @@ class HTMLToText(HTMLParser):
     """Convert HTML content to plain text."""
 
     # Tags whose text content should be preceded by a newline
-    _block_tags = {
-        "div", "p", "li", "ul", "ol", "h1", "h2", "h3", "h4", "h5", "h6",
-        "table", "tr", "td", "th", "blockquote", "pre", "section", "article",
-        "header", "footer", "nav", "main", "aside", "figure", "figcaption",
+    _block_tags: ClassVar[set[str]] = {
+        "div",
+        "p",
+        "li",
+        "ul",
+        "ol",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "table",
+        "tr",
+        "td",
+        "th",
+        "blockquote",
+        "pre",
+        "section",
+        "article",
+        "header",
+        "footer",
+        "nav",
+        "main",
+        "aside",
+        "figure",
+        "figcaption",
     }
 
     # Tags to skip entirely (content not useful for reading)
-    _skip_tags = {"script", "style", "noscript"}
+    _skip_tags: ClassVar[set[str]] = {"script", "style", "noscript"}
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._result: list[str] = []
         self._skipping = False
@@ -106,15 +129,15 @@ class WebFetchTool(BaseTool):
         config_data = {**config_data, **entry.options}
 
         url = tool_input.tool_args["url"]
-        max_length = int(
-            config_data.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH, 10000)
-        )
+        max_length = int(config_data.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH, 10000))
 
         _LOGGER.info("Web fetch requested for: %s", url)
 
         # Validate URL scheme
         if not url.startswith(("http://", "https://")):
-            return {"error": f"Invalid URL scheme. Only HTTP and HTTPS are supported: {url}"}
+            return {
+                "error": f"Invalid URL scheme. Only HTTP and HTTPS are supported: {url}"
+            }
 
         cache = SQLiteCache()
         cached_response = cache.get(__name__, {"url": url})
@@ -145,7 +168,10 @@ class WebFetchTool(BaseTool):
                     }
 
                 content_type = resp.headers.get("Content-Type", "")
-                if "text/html" not in content_type and "application/xhtml" not in content_type:
+                if (
+                    "text/html" not in content_type
+                    and "application/xhtml" not in content_type
+                ):
                     # For non-HTML content, return as-is (e.g., plain text, markdown)
                     text_content = await resp.text()
                 else:
@@ -165,7 +191,9 @@ class WebFetchTool(BaseTool):
                 if len(text_content) > max_length:
                     truncated_chars = len(text_content) - max_length
                     text_content = text_content[:max_length]
-                    text_content += f"\n\n... [truncated, {truncated_chars} characters omitted]"
+                    text_content += (
+                        f"\n\n... [truncated, {truncated_chars} characters omitted]"
+                    )
 
                 result = {
                     "url": url,
@@ -176,9 +204,9 @@ class WebFetchTool(BaseTool):
                 cache.set(__name__, {"url": url}, result)
                 return result
 
-        except asyncio.TimeoutError:
-            _LOGGER.error("Web fetch timeout for URL: %s", url)
+        except TimeoutError:
+            _LOGGER.exception("Web fetch timeout for URL: %s", url)
             return {"error": f"Request timed out fetching: {url}", "url": url}
         except Exception as e:
-            _LOGGER.error("Web fetch error for URL %s: %s", url, e)
+            _LOGGER.exception("Web fetch error for URL %s", url)
             return {"error": f"Error fetching page: {e!s}", "url": url}
