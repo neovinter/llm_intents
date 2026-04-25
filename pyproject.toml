@@ -25,5 +25,8 @@ warn_unreachable = true
 ignore=[
     "TD002",
     "TD003",
-    "FIX002"
+    "FIX002",
+    "PLR0911",
+    "D102",
+    "D107"
 ]
