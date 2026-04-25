@@ -16,7 +16,7 @@ from zoneinfo import available_timezones
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components.weather import WeatherEntityFeature
-from homeassistant.core import callback
+from homeassistant.core import callback, HomeAssistant
 from homeassistant.helpers.selector import (
     EntitySelector,
     EntitySelectorConfig,
