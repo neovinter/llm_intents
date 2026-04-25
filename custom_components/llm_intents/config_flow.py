@@ -68,10 +68,10 @@ from .const import (
     CONF_TELEGRAM_ENABLED,
     CONF_TELEGRAM_NUM_POSTS,
     CONF_UNIT_CONVERTER_ENABLED,
-    CONF_WEB_FETCH_ENABLED,
-    CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
     CONF_WEATHER_ENABLED,
     CONF_WEATHER_TEMPERATURE_SENSOR,
+    CONF_WEB_FETCH_ENABLED,
+    CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
     CONF_WIKIPEDIA_ENABLED,
     CONF_WIKIPEDIA_NUM_RESULTS,
     CONF_YOUTUBE_ENABLED,
@@ -159,10 +159,9 @@ def expand_config_for_schema(config: dict) -> dict:
     provider_keys = config.get(CONF_PROVIDER_API_KEYS) or {}
     result[CONF_GOOGLE_API_KEY] = provider_keys.get(PROVIDER_GOOGLE, "")
     result[CONF_BRAVE_API_KEY] = provider_keys.get(PROVIDER_BRAVE, "")
-    result[CONF_WEB_FETCH_MAX_CONTENT_LENGTH] = (
-        config.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH)
-        or SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH)
-    )
+    result[CONF_WEB_FETCH_MAX_CONTENT_LENGTH] = config.get(
+        CONF_WEB_FETCH_MAX_CONTENT_LENGTH
+    ) or SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH)
     return result
 
 
@@ -433,7 +432,7 @@ async def get_web_fetch_schema(hass) -> vol.Schema:
             vol.Required(
                 CONF_WEB_FETCH_MAX_CONTENT_LENGTH,
                 default=SERVICE_DEFAULTS.get(CONF_WEB_FETCH_MAX_CONTENT_LENGTH),
-            ): MyNumberSelector(
+            ): NumberSelector(
                 NumberSelectorConfig(
                     min=1000,
                     max=50000,

@@ -30,18 +30,14 @@ def extract_channel_name(url_or_name: str) -> str:
         url_or_name = re.sub(r"^https?://", "", url_or_name)
         # Remove domain part and optional /s/ prefix (static page marker)
         url_or_name = re.sub(r"^(t\.me|telegram\.me)/", "", url_or_name)
-        if url_or_name.startswith("s/"):
-            url_or_name = url_or_name[2:]
+        url_or_name = url_or_name.removeprefix("s/")
         # Remove path after channel name
         parts = url_or_name.split("?")[0].split("/")
         parts = [p for p in parts if p]
         url_or_name = parts[0] if parts else ""
 
     # If it still has @ prefix, remove it
-    if url_or_name.startswith("@"):
-        url_or_name = url_or_name[1:]
-
-    return url_or_name
+    return url_or_name.removeprefix("@")
 
 
 def extract_posts(html_content: str) -> list[dict[str, str]]:
@@ -51,7 +47,9 @@ def extract_posts(html_content: str) -> list[dict[str, str]]:
     dates = re.findall(date_pattern, html_content)
 
     # Extract post text content
-    text_pattern = r'<div class="tgme_widget_message_text js-message_text"[^>]*>(.*?)</div>'
+    text_pattern = (
+        r'<div class="tgme_widget_message_text js-message_text"[^>]*>(.*?)</div>'
+    )
     text_matches = re.findall(text_pattern, html_content, re.DOTALL)
 
     # Pair dates with text (same count expected)
@@ -60,16 +58,18 @@ def extract_posts(html_content: str) -> list[dict[str, str]]:
         text = match
         text = re.sub(r"<br\s*/?>", " ", text)
         text = re.sub(r"<tg-emoji[^>]*>.*?</tg-emoji>", "", text, flags=re.DOTALL)
-        text = re.sub(r'<a[^>]*>', "", text)
+        text = re.sub(r"<a[^>]*>", "", text)
         text = text.replace("</a>", "")
         text = re.sub(r"<[^>]+>", "", text)
         text = re.sub(r"\s+", " ", text).strip()
 
         if text:
-            posts.append({
-                "date": dates[i] if i < len(dates) else "",
-                "text": text,
-            })
+            posts.append(
+                {
+                    "date": dates[i] if i < len(dates) else "",
+                    "text": text,
+                }
+            )
 
     return posts
 
@@ -153,19 +153,19 @@ class ReadTelegramTool(BaseTool):
                         break
                     seen_urls.add(page_url)
 
-                    async with session.get(page_url, headers=headers) as resp:
-                        if resp.status != 200:
+                    async with session.get(page_url, headers=headers) as page_resp:
+                        if page_resp.status != 200:
                             _LOGGER.error(
                                 "Telegram fetch received HTTP %s for channel: %s",
-                                resp.status,
+                                page_resp.status,
                                 channel_name,
                             )
                             return {
-                                "error": f"Failed to fetch channel. HTTP status: {resp.status}",
+                                "error": f"Failed to fetch channel. HTTP status: {page_resp.status}",
                                 "channel": channel_name,
                             }
 
-                        html_content = await resp.text()
+                        html_content = await page_resp.text()
                         page_posts = extract_posts(html_content)
 
                         if not page_posts:
@@ -203,5 +203,8 @@ class ReadTelegramTool(BaseTool):
                 return result
 
         except Exception as e:
-            _LOGGER.error("Telegram fetch error for %s: %s", channel_name, e)
-            return {"error": f"Error reading Telegram channel: {e!s}", "channel": channel_name}
+            _LOGGER.exception("Telegram fetch error for %s", channel_name)
+            return {
+                "error": f"Error reading Telegram channel: {e!s}",
+                "channel": channel_name,
+            }
