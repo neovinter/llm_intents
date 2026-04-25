@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.data_entry_flow import FlowResult
+from homeassistant.data_entry_flow import FlowResult
 from zoneinfo import available_timezones
 
 import voluptuous as vol
