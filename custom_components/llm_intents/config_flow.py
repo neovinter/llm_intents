@@ -10,13 +10,14 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-from homeassistant.data_entry_flow import FlowResult
+    from homeassistant.data_entry_flow import FlowResult
+
 from zoneinfo import available_timezones
 
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components.weather import WeatherEntityFeature
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.selector import (
     EntitySelector,
     EntitySelectorConfig,
