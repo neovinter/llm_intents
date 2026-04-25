@@ -60,7 +60,8 @@ class SQLiteCache:
         now = int(time.time())
         cutoff = now - self.DEFAULT_MAX_AGE
         deleted = self._conn.execute(
-            "DELETE FROM cache WHERE created_at < ?", (cutoff,),
+            "DELETE FROM cache WHERE created_at < ?",
+            (cutoff,),
         ).rowcount
         self._conn.commit()
         if deleted:
@@ -78,7 +79,9 @@ class SQLiteCache:
                 return json.loads(row[0])
             except json.JSONDecodeError:
                 logger.debug(
-                    "Failed to decode cached data for tool: %s Params: %s", tool, params,
+                    "Failed to decode cached data for tool: %s Params: %s",
+                    tool,
+                    params,
                 )
                 return None
         else:

@@ -49,5 +49,7 @@ class SearXngSearchTool(SearchWebTool):
 
                     results.append(result)
                 return results
-            err_msg = f"Web search received a HTTP {resp.status} error from SearXNG: {data}"
+            err_msg = (
+                f"Web search received a HTTP {resp.status} error from SearXNG: {data}"
+            )
             raise RuntimeError(err_msg)

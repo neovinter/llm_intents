@@ -177,7 +177,9 @@ def merge_provider_api_keys_from_input(config_data: dict, user_input: dict) -> N
     config_data.pop(CONF_GOOGLE_PLACES_API_KEY, None)
 
 
-async def get_brave_schema(hass: HomeAssistant, is_llm_context_search: bool) -> vol.Schema:
+async def get_brave_schema(
+    hass: HomeAssistant, is_llm_context_search: bool
+) -> vol.Schema:
     """Return the static schema for Brave service configuration."""
     iana_timezones = await asyncio.to_thread(available_timezones)
     iana_timezones = sorted(iana_timezones)

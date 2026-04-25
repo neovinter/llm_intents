@@ -82,7 +82,7 @@ class BaseAPI(llm.API):
     _TOOLS_CONF_MAP = None
     _API_PROMPT = ""
 
-    def __init__(self, hass: HomeAssistant, name: str, id: str | None = None) -> None: #noqa: A002
+    def __init__(self, hass: HomeAssistant, name: str, id: str | None = None) -> None:  # noqa: A002
         """Initialize the API."""
         super().__init__(hass=hass, id=id or name.lower().replace(" ", "_"), name=name)
 

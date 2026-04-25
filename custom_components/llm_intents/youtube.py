@@ -45,7 +45,8 @@ class SearchYouTubeTool(BaseTool):
     parameters = vol.Schema(
         {
             vol.Required(
-                "query", description="The search query for YouTube videos",
+                "query",
+                description="The search query for YouTube videos",
             ): str,
             vol.Optional(
                 "num_results",
