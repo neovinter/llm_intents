@@ -67,14 +67,12 @@ class HTMLToText(HTMLParser):
         if tag in self._skip_tags:
             self._skipping = True
             self._skip_depth += 1
-        elif self._skipping:
-            self._skip_depth += 1
         elif tag in self._block_tags:
             if self._result and self._result[-1] != "\n":
                 self._result.append("\n")
 
     def handle_endtag(self, tag: str) -> None:
-        if self._skipping:
+        if self._skipping and tag in self._skip_tags:
             self._skip_depth -= 1
             if self._skip_depth <= 0:
                 self._skipping = False
