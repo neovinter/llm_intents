@@ -28,13 +28,18 @@ class SearchYouTubeTool(BaseTool):
         "Use this tool to search YouTube when the user requests or infers they want to:\n"
         "- Find a video to watch\n"
         "- Search for music, tutorials, or other video content\n"
-        "- Play something on a TV or media player"
+        "- Play something on a TV or media player\n"
+        "- Find recent videos from a person or channel\n"
+        "\n"
+        "Always use the user's query directly — do not try to guess or expand channel names.\n"
+        "YouTube's search is smart enough to find the right results from a simple keyword or person's name."
     )
 
     prompt_description = (
         "Use the `search_youtube` tool to find videos on YouTube:\n"
         "- Returns video titles, URLs, channel names, and descriptions.\n"
-        "- Use this when the user wants to watch or play video content."
+        "- The query accepts any text: person's name, channel name, topic, or keywords.\n"
+        "- No need for an exact channel name — YouTube returns results by relevance automatically."
     )
 
     response_directive = (
@@ -50,9 +55,14 @@ class SearchYouTubeTool(BaseTool):
             ): str,
             vol.Optional(
                 "num_results",
-                default=1,
+                default=10,
                 description="Number of videos to return (1-25). Use more when the user wants multiple options.",
             ): vol.All(int, vol.Range(min=1, max=25)),
+            vol.Optional(
+                "order",
+                default="relevance",
+                description="Sort order: 'relevance' (default) or 'date' (most recent first). Use 'date' when the user wants the latest or freshest videos.",
+            ): vol.In(["relevance", "date"]),
         },
     )
 
@@ -68,7 +78,8 @@ class SearchYouTubeTool(BaseTool):
         config_data = {**config_data, **entry.options}
 
         query = tool_input.tool_args["query"]
-        num_results = tool_input.tool_args.get("num_results", 1)
+        num_results = tool_input.tool_args.get("num_results", 10)
+        order = tool_input.tool_args.get("order", "relevance")
 
         provider_keys = config_data.get(CONF_PROVIDER_API_KEYS) or {}
         api_key = provider_keys.get(PROVIDER_GOOGLE, "")
@@ -80,7 +91,7 @@ class SearchYouTubeTool(BaseTool):
             session = async_get_clientsession(hass)
 
             cache = SQLiteCache()
-            cache_params = {"query": query, "maxResults": num_results}
+            cache_params = {"query": query, "maxResults": num_results, "order": order}
             cached_response = cache.get(__name__, cache_params)
             if cached_response:
                 return cached_response
@@ -90,6 +101,7 @@ class SearchYouTubeTool(BaseTool):
                 "q": query,
                 "type": "video",
                 "maxResults": num_results,
+                "order": order,
                 "key": api_key,
             }
 
