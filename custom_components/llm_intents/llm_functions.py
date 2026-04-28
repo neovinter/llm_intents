@@ -19,6 +19,7 @@ from .const import (
     CONF_GOOGLE_PLACES_ENABLED,
     CONF_SEARCH_PROVIDER_BRAVE_LLM,
     CONF_SEARCH_PROVIDER_SEARXNG,
+    CONF_TELEGRAM_ENABLED,
     CONF_UNIT_CONVERTER_ENABLED,
     CONF_WEATHER_ENABLED,
     CONF_WEB_FETCH_ENABLED,
@@ -36,6 +37,7 @@ from .date_info import DateInfoTool
 from .google_places import FindPlacesTool
 from .play_media import PlayVideoTool
 from .searxng_search import SearXngSearchTool
+from .telegram import ReadTelegramTool
 from .unit_converter import UnitConverterTool
 from .weather import WeatherForecastTool
 from .web_fetch import WebFetchTool
@@ -61,6 +63,7 @@ SEARCH_CONF_ENABLED_MAP = [
     (CONF_YOUTUBE_ENABLED, SearchYouTubeTool),
     (CONF_WIKIPEDIA_ENABLED, SearchWikipediaTool),
     (CONF_WEB_FETCH_ENABLED, WebFetchTool),
+    (CONF_TELEGRAM_ENABLED, ReadTelegramTool),
 ]
 
 WEATHER_CONF_ENABLED_MAP = [
