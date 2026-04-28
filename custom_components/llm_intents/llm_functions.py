@@ -21,6 +21,7 @@ from .const import (
     CONF_SEARCH_PROVIDER_SEARXNG,
     CONF_UNIT_CONVERTER_ENABLED,
     CONF_WEATHER_ENABLED,
+    CONF_WEB_FETCH_ENABLED,
     CONF_WIKIPEDIA_ENABLED,
     CONF_YOUTUBE_ENABLED,
     DOMAIN,
@@ -37,6 +38,7 @@ from .play_media import PlayVideoTool
 from .searxng_search import SearXngSearchTool
 from .unit_converter import UnitConverterTool
 from .weather import WeatherForecastTool
+from .web_fetch import WebFetchTool
 from .wikipedia import SearchWikipediaTool
 from .youtube import SearchYouTubeTool
 
@@ -58,6 +60,7 @@ SEARCH_CONF_ENABLED_MAP = [
     (CONF_GOOGLE_PLACES_ENABLED, FindPlacesTool),
     (CONF_YOUTUBE_ENABLED, SearchYouTubeTool),
     (CONF_WIKIPEDIA_ENABLED, SearchWikipediaTool),
+    (CONF_WEB_FETCH_ENABLED, WebFetchTool),
 ]
 
 WEATHER_CONF_ENABLED_MAP = [
