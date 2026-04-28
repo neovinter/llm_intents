@@ -9,6 +9,7 @@ DOMAIN = "llm_intents"
 ADDON_NAME = "Tools for Assist"
 
 SEARCH_API_NAME = "Search Services"
+WEB_FETCH_API_NAME = "Web Fetch"
 WEATHER_API_NAME = "Weather Forecast"
 MEDIA_API_NAME = "Media Services"
 BASIC_UTILITIES_API_NAME = "Basic Utilities"
@@ -18,6 +19,8 @@ BASIC_UTILITIES_API_NAME = "Basic Utilities"
 CONF_CACHE_MAX_AGE = "cache_max_age"
 
 SEARCH_SERVICES_PROMPT = "You may utilise the Search Services tools to lookup up-to-date information from the internet."
+
+WEB_FETCH_SERVICES_PROMPT = "Use the Web Fetch tool to retrieve the content of web pages and convert HTML to readable text."
 
 WEATHER_SERVICES_PROMPT = """
 Use the Weather Services tools to access current weather and forecast data.
@@ -145,6 +148,11 @@ CONF_YOUTUBE_ENABLED = "youtube_enabled"
 CONF_WIKIPEDIA_ENABLED = "wikipedia_enabled"
 CONF_WIKIPEDIA_NUM_RESULTS = "wikipedia_num_results"
 
+# Web Fetch-specific constants
+
+CONF_WEB_FETCH_ENABLED = "web_fetch_enabled"
+CONF_WEB_FETCH_MAX_CONTENT_LENGTH = "web_fetch_max_content_length"
+
 # Weather constants
 
 CONF_WEATHER_ENABLED = "weather_enabled"
@@ -178,6 +186,7 @@ SERVICE_DEFAULTS = {
     CONF_GOOGLE_PLACES_RADIUS: 5,
     CONF_GOOGLE_PLACES_RANKING: "Distance",
     CONF_WIKIPEDIA_NUM_RESULTS: 1,
+    CONF_WEB_FETCH_MAX_CONTENT_LENGTH: 10000,
     CONF_DAILY_WEATHER_ENTITY: None,
     CONF_HOURLY_WEATHER_ENTITY: None,
     CONF_WEATHER_TEMPERATURE_SENSOR: None,
